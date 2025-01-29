@@ -1,16 +1,21 @@
 const express = require("express");
 const app = express();
 const { Sequelize } = require("sequelize");
-const port = process.env.PORT
+const port = process.env.PORT || 3000; // Default to port 3000 if not specified
 require('dotenv').config();
-const config = require("./src/config/config");
-// const routes = require("./routes");
+const config = require("./config/config");
 const bodyParser = require('body-parser');
-var cors = require('cors')
+const cors = require('cors');
 
-app.use(bodyParser.json({limit:'50mb'})); 
-app.use(cors())
-app.use(bodyParser.urlencoded({extended:true, limit:'50mb'})); 
+// CORS configuration
+const corsOptions = {
+  origin: 'http://localhost:5173', // Replace with your frontend's URL
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use("*",cors(corsOptions)); // Use CORS with the specified options
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
 // Test the database connection
 const sequelize = new Sequelize(config.development);
@@ -19,13 +24,9 @@ sequelize
   .then(() => console.log("Database connected."))
   .catch((err) => console.error("Unable to connect to the database:", err));
 
-// const userRoutes = require("./routes/userRoutes");
-// app.use("/users", userRoutes);
+const userRoutes = require("./routes/users");
+app.use("/users", userRoutes);
 
-// const shopRoutes = require("./routes/shopRoutes");
-// app.use("/shops", shopRoutes);
-
-// app.use(userRoutes);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

@@ -18,7 +18,7 @@ export async function action({ request }) {
     throw new Response("Invalid mode", { status: 400 });
   }
 
-  const response = await fetch("http://localhost:8080/" + mode, {
+  const response = await fetch("http://localhost:3000/users/" + mode, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
