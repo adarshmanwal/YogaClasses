@@ -18,6 +18,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
 // Test the database connection
+console.log(config.development)
 const sequelize = new Sequelize(config.development);
 sequelize
   .authenticate()
