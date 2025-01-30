@@ -13,7 +13,7 @@ const corsOptions = {
   optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
-app.use("*",cors(corsOptions)); // Use CORS with the specified options
+app.use("*",cors()); // Use CORS with the specified options
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
