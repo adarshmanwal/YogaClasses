@@ -28,6 +28,9 @@ sequelize
 const userRoutes = require("./routes/users");
 app.use("/users", userRoutes);
 
+const shopRoute = require("./routes/shops");
+app.use("/shops", shopRoute);
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
