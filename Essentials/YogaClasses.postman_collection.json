@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "503976b7-fbf7-47fc-9fee-9cdc1312fdd2",
+		"name": "YogaClasses",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17373497"
+	},
+	"item": [
+		{
+			"name": "Create shop",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n       \"name\": \"Yoga Bliss\",\r\n       \"description\": \"A peaceful yoga studio\",\r\n       \"image\": \"https://example.com/image.jpg\",\r\n       \"ownerId\": \"owner-uuid-here\",\r\n       \"location\": \"Downtown\",\r\n       \"phoneNumber\": \"1234567890\",\r\n       \"email\": \"yoga@example.com\",\r\n       \"openingHours\": \"06:00 AM\",\r\n       \"closingHours\": \"09:00 PM\",\r\n       \"daysOpen\": [\"Monday\", \"Wednesday\", \"Friday\"]\r\n     }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/shops/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"shops",
+						"create"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:5000/api/shops/create \\\r\n     -H \"Content-Type: application/json\" \\\r\n     -d '{\r\n       \"name\": \"Yoga Bliss\",\r\n       \"description\": \"A peaceful yoga studio\",\r\n       \"image\": \"https://example.com/image.jpg\",\r\n       \"ownerId\": \"owner-uuid-here\",\r\n       \"location\": \"Downtown\",\r\n       \"phoneNumber\": \"1234567890\",\r\n       \"email\": \"yoga@example.com\",\r\n       \"openingHours\": \"06:00 AM\",\r\n       \"closingHours\": \"09:00 PM\",\r\n       \"daysOpen\": [\"Monday\", \"Wednesday\", \"Friday\"]\r\n     }'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "get all shop",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/shops/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"shops",
+						"all"
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:3000/shops/all'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "shop with id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/shops/{shop_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"shops",
+						"{shop_id}"
+					]
+				},
+				"description": "Generated from cURL: curl --location \"http://localhost:3000/shops/{shop_id}\"\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "update shop with id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Updated Yoga Bliss\",\r\n    \"description\": \"Updated peaceful yoga studio\",\r\n    \"openingHours\": \"07:00 AM\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/shops/update/{shop_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"shops",
+						"update",
+						"{shop_id}"
+					]
+				},
+				"description": "Generated from cURL: curl --location --request PUT \"http://localhost:3000/shops/update/{shop_id}\" \\\r\n--header 'Content-Type: application/json' \\\r\n--data-raw '{\r\n    \"name\": \"Updated Yoga Bliss\",\r\n    \"description\": \"Updated peaceful yoga studio\",\r\n    \"openingHours\": \"07:00 AM\"\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "delete shop with id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/shops/delete/{shop_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"shops",
+						"delete",
+						"{shop_id}"
+					]
+				},
+				"description": "Generated from cURL: curl --location --request DELETE \"http://localhost:3000/shops/delete/{shop_id}\"\r\n"
+			},
+			"response": []
+		}
+	]
+}
