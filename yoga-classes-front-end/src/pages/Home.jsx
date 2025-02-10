@@ -20,20 +20,21 @@ export default function Home() {
         </div>
 
         <div className="w-[180px] flex items-center justify-between shrink-0 mr-5">
-          <button class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition">
+          <button className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition">
             Add Shop
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-4 m-1 border">
-        <div className="w-full">
+
+      <div className="flex flex-wrap gap-4 m-1 m-11">
+        <div className="w-full md:w-1/3">
           <div className="relative mb-2">
             <img className="w-full" src={thumbnail} alt="Thumbnail" />
             <div className="absolute bottom-2 right-1 bg-black text-white text-xs font-medium px-1.5 py-0.5 rounded">
               14:20
             </div>
           </div>
-          <div className="grid grid-cols-[50px_1fr] gap-2">
+          <div className="flex gap-2">
             <div>
               <img
                 className="w-9 h-9 rounded-full"
@@ -50,14 +51,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="w-full">
+        <div className="w-full md:w-1/3">
           <div className="relative mb-2">
             <img className="w-full" src={thumbnail} alt="Thumbnail" />
             <div className="absolute bottom-2 right-1 bg-black text-white text-xs font-medium px-1.5 py-0.5 rounded">
               14:20
             </div>
           </div>
-          <div className="grid grid-cols-[50px_1fr] gap-2">
+          <div className="flex gap-2">
             <div>
               <img
                 className="w-9 h-9 rounded-full"
@@ -74,14 +75,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="w-full">
+        <div className="w-full md:w-1/3">
           <div className="relative mb-2">
             <img className="w-full" src={thumbnail} alt="Thumbnail" />
             <div className="absolute bottom-2 right-1 bg-black text-white text-xs font-medium px-1.5 py-0.5 rounded">
               14:20
             </div>
           </div>
-          <div className="grid grid-cols-[50px_1fr] gap-2">
+          <div className="flex gap-2">
             <div>
               <img
                 className="w-9 h-9 rounded-full"

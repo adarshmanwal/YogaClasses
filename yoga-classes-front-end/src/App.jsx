@@ -3,7 +3,7 @@ import Root from "./pages/Root";
 import Home from "./pages/Home";
 import Authentication, { action as authAction } from "./pages/Authenticate";
 import Error from "./pages/Error";
-import { tokenLoader } from "./utils/auth";
+import { checkAuthLoader, tokenLoader } from "./utils/auth";
 import { action as logoutAction} from "./pages/Logout";
 function App() {
   const router = createBrowserRouter([
@@ -14,7 +14,7 @@ function App() {
       loader: tokenLoader,
       id: "root",
       children: [
-        { index: true, element: <Home /> },
+        { index: true, element: <Home />,loader: checkAuthLoader },
         {
           path: "auth",
           element: <Authentication></Authentication>,
