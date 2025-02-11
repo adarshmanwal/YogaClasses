@@ -5,7 +5,6 @@ import Header from "../components/Header";
 
 export default function Error() {
   const error = useRouteError();
-  console.log(error);
 
   let title = "An error has occurred";
   let message = "Please try again later";
