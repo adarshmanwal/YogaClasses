@@ -29,7 +29,7 @@ exports.createShop = async (req, res) => {
 // Get all shops
 exports.getAllShops = async (req, res) => {
   try {
-    const shops = await Shop.findAll({ include: [{ model: User, attributes: ["id", "name", "email"] }] });
+    const shops = await Shop.findAll({ include: [{ model: User, attributes: ["id", "email"] }] });
 
     return res.status(200).json({ success: true, data: shops });
   } catch (error) {
