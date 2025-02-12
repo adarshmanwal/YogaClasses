@@ -1,7 +1,11 @@
-import { NavLink, useRouteLoaderData,Form } from "react-router-dom";
+import { useContext } from "react";
+import { NavLink, useRouteLoaderData, Form } from "react-router-dom";
+import { UserContext } from "../store/user/user-context";
 
 function Header() {
   const token = useRouteLoaderData("root");
+  const userData = useContext(UserContext);
+  console.log(userData.user.email);
 
   return (
     <nav className="bg-gray-800">
@@ -29,6 +33,9 @@ function Header() {
                 >
                   Logout
                 </button>
+                <span className="ml-4 text-sm font-medium text-gray-300">
+                  {userData.user.email}
+                </span>
               </Form>
             ) : (
               <NavLink

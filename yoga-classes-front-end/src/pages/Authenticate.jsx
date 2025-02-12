@@ -26,17 +26,20 @@ export async function action({ request }) {
     body: JSON.stringify(authData),
   });
 
-  if(response.status === 401 || response.status === 422){
-    return response
+  if (response.status === 401 || response.status === 422) {
+    return response;
   }
-  if(!response.ok){
+  if (!response.ok) {
     throw new Response("Authentication failed");
   }
 
   const resData = await response.json();
   const token = resData.token;
-  localStorage.setItem("token", token);
   
+  // Store token and user data in localStorage
+  localStorage.setItem("token", token);
+  localStorage.setItem("userData", JSON.stringify(resData));
 
   return redirect("/");
 }
+

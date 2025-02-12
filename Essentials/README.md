@@ -89,3 +89,6 @@ This will start the development server and you can view the application in your 
 ## Contributing
 
 We welcome contributions to the Yoga Classes Front-End project! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
+
+
+##Things to achive
