@@ -5,7 +5,6 @@ import { UserContext } from "../store/user/user-context";
 function Header() {
   const token = useRouteLoaderData("root");
   const userData = useContext(UserContext);
-  console.log(userData.user.email);
 
   return (
     <nav className="bg-gray-800">

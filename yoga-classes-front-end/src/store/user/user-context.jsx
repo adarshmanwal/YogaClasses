@@ -9,7 +9,6 @@ export const UserContext = createContext({
 
 export default function UserContextProvider({ children }) {
   const [user, setUser] = useState(initialUserData);
-
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("userData"));
     if (storedUser) {

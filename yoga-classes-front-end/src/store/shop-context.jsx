@@ -11,8 +11,6 @@ export default function ShopContextProvider({ children }) {
   //add shop from frontend
   //edit shop from frontend
   //delete shop from frontend
-  //get shops that are associated to the current users
-  //create users contextAPI to store user data
   function addShop(shop) {
     setShops((prevShops) => {
       return { items: [...prevShops.items, shop] };

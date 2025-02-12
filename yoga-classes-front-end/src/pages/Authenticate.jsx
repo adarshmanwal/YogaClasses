@@ -1,6 +1,7 @@
 import React from "react";
 import AuthForm from "../components/AuthForm";
 import { redirect } from "react-router-dom";
+import httpClient from "../utils/httpClient";
 
 export default function Authentication() {
   return <AuthForm></AuthForm>;
@@ -18,28 +19,20 @@ export async function action({ request }) {
     throw new Response("Invalid mode", { status: 400 });
   }
 
-  const response = await fetch("http://localhost:3000/users/" + mode, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(authData),
-  });
+  const response = await httpClient.post(`/users/${mode}`, authData);
 
   if (response.status === 401 || response.status === 422) {
     return response;
   }
-  if (!response.ok) {
+  if (response.statusText != "OK") {
     throw new Response("Authentication failed");
   }
 
-  const resData = await response.json();
-  const token = resData.token;
-  
+  const token = response.data.token;
+
   // Store token and user data in localStorage
   localStorage.setItem("token", token);
-  localStorage.setItem("userData", JSON.stringify(resData));
+  localStorage.setItem("userData", JSON.stringify(response.data));
 
   return redirect("/");
 }
-
