@@ -30,7 +30,6 @@ httpClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    debugger;
     console.error("Error Response:", error);
 
     // Handle 401 Unauthorized globally (redirect to login)

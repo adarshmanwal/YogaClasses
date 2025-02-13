@@ -3,10 +3,6 @@ const jwt = require("jsonwebtoken");
 
 // Create a new shop
 exports.createShop = async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
-  }
   try {
     const {
       name,
@@ -21,9 +17,6 @@ exports.createShop = async (req, res) => {
       daysOpen,
     } = req.body;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.id;
-
     const shop = await Shop.create({
       name,
       description,
@@ -31,7 +24,7 @@ exports.createShop = async (req, res) => {
       ownerId,
       location,
       phoneNumber,
-      ownerId: userId,
+      ownerId: req.user.id,
       email,
       openingHours,
       closingHours,
@@ -52,14 +45,8 @@ exports.createShop = async (req, res) => {
 // Get all shops
 exports.getAllShops = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = decoded.id;
+      const userId = req.user.id
 
       const shops = await Shop.findAll({
         where: { ownerId: userId },
@@ -86,7 +73,7 @@ exports.getShopById = async (req, res) => {
   try {
     const { id } = req.params;
     const shop = await Shop.findByPk(id, {
-      include: [{ model: User, attributes: ["id", "name", "email"] }],
+      include: [{ model: User, attributes: ["id", "email"] }],
     });
 
     if (!shop) {

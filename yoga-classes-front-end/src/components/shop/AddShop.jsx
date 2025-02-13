@@ -38,7 +38,6 @@ export default function AddShop({ isModalOpen, setIsModalOpen }) {
 
     try {
       const response = await httpClient.post("/shops/create", shopData);
-      debugger;
 
       if (response.status === 201) {
         shopCtx.addShop(response.data.data);
@@ -57,7 +56,6 @@ export default function AddShop({ isModalOpen, setIsModalOpen }) {
         className="p-4 bg-white rounded-md shadow-lg"
       >
         <h2 className="text-lg font-bold mb-4">Add New Shop</h2>
-
         <input
           type="text"
           name="name"

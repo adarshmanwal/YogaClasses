@@ -12,7 +12,6 @@ export default function ShopContextProvider({ children }) {
   //edit shop from frontend
   //delete shop from frontend
   function addShop(shop) {
-    debugger
     setShops((prevShops) => {
       return [shop, ...prevShops];
     });
