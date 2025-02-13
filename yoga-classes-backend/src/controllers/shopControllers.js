@@ -3,11 +3,12 @@ const jwt = require("jsonwebtoken");
 
 // Create a new shop
 exports.createShop = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
   try {
-    const { name, description, image, ownerId, location, phoneNumber, email, openingHours, closingHours, daysOpen } =
-      req.body;
-
-    const shop = await Shop.create({
+    const {
       name,
       description,
       image,
@@ -18,10 +19,31 @@ exports.createShop = async (req, res) => {
       openingHours,
       closingHours,
       daysOpen,
-    });
-    console.log(shop)
+    } = req.body;
 
-    return res.status(201).json({ success: true, message: "Shop created successfully", data: shop });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    const shop = await Shop.create({
+      name,
+      description,
+      image,
+      ownerId,
+      location,
+      phoneNumber,
+      ownerId: userId,
+      email,
+      openingHours,
+      closingHours,
+      // daysOpen,
+    });
+    console.log(shop);
+
+    return res.status(201).json({
+      success: true,
+      message: "Shop created successfully",
+      data: shop,
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -30,23 +52,30 @@ exports.createShop = async (req, res) => {
 // Get all shops
 exports.getAllShops = async (req, res) => {
   try {
-    // Extract token from the request headers
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
-    // Verify the token and get the user ID
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.id;
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.id;
 
-    // Fetch only the shops associated with the user
-    const shops = await Shop.findAll({
-      where: { ownerId: userId },
-      include: [{ model: User, attributes: ["id", "email"] }],
-    });
+      const shops = await Shop.findAll({
+        where: { ownerId: userId },
+        include: [{ model: User, attributes: ["id", "email"] }],
+      });
 
-    return res.status(200).json({ success: true, data: shops });
+      return res.status(200).json({ success: true, data: shops });
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        return res.status(401).json({
+          success: false,
+          message: "Token expired. Please log in again.",
+        });
+      }
+      throw error;
+    }
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -56,10 +85,14 @@ exports.getAllShops = async (req, res) => {
 exports.getShopById = async (req, res) => {
   try {
     const { id } = req.params;
-    const shop = await Shop.findByPk(id, { include: [{ model: User, attributes: ["id", "name", "email"] }] });
+    const shop = await Shop.findByPk(id, {
+      include: [{ model: User, attributes: ["id", "name", "email"] }],
+    });
 
     if (!shop) {
-      return res.status(404).json({ success: false, message: "Shop not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Shop not found" });
     }
 
     return res.status(200).json({ success: true, data: shop });
@@ -76,12 +109,18 @@ exports.updateShop = async (req, res) => {
 
     const shop = await Shop.findByPk(id);
     if (!shop) {
-      return res.status(404).json({ success: false, message: "Shop not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Shop not found" });
     }
 
     await shop.update(updatedData);
 
-    return res.status(200).json({ success: true, message: "Shop updated successfully", data: shop });
+    return res.status(200).json({
+      success: true,
+      message: "Shop updated successfully",
+      data: shop,
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -94,12 +133,16 @@ exports.deleteShop = async (req, res) => {
 
     const shop = await Shop.findByPk(id);
     if (!shop) {
-      return res.status(404).json({ success: false, message: "Shop not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Shop not found" });
     }
 
     await shop.destroy();
 
-    return res.status(200).json({ success: true, message: "Shop deleted successfully" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Shop deleted successfully" });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

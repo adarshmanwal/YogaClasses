@@ -4,12 +4,12 @@ import thumbnail from "../assets/thumbnail-1.webp";
 import { ShopContext } from "../store/shop-context";
 import { useRouteLoaderData } from "react-router-dom";
 import Modal from "../components/UI/Modal"; // Import the Modal component
+import AddShop from "../components/shop/AddShop";
 
 export default function Home() {
   const shopData = useRouteLoaderData("home");
   const { shops, setShops } = useContext(ShopContext);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
-  console.log("isModalOpen =>",isModalOpen)
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     if (shopData) {
       setShops(shopData);
@@ -86,27 +86,7 @@ export default function Home() {
       </div>
 
       {/* Modal */}
-      <Modal open={isModalOpen}>
-        <div className="p-4 bg-white rounded-md shadow-lg">
-          <h2 className="text-lg font-bold mb-4">Add New Shop</h2>
-          <input
-            type="text"
-            placeholder="Shop Name"
-            className="border p-2 w-full mb-2"
-          />
-          <input
-            type="text"
-            placeholder="Description"
-            className="border p-2 w-full mb-2"
-          />
-          <button
-            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition"
-            onClick={() => setIsModalOpen(false)} // Close modal on click
-          >
-            Close
-          </button>
-        </div>
-      </Modal>
+      <AddShop isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}></AddShop>
     </>
   );
 }
