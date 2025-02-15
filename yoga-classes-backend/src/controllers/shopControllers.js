@@ -1,13 +1,22 @@
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { Shop, User } = require("../../models");
-const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
+const bucketname = process.env.BUCKET_NAME;
+const region = process.env.BUCKET_REGION;
+const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+const secretAccessKey = process.env.AWS_SECRET;
 
+const s3Client = new S3Client({
+  region,
+  credentials: { accessKeyId, secretAccessKey },
+});
 // Create a new shop
 exports.createShop = async (req, res) => {
   try {
     const {
       name,
       description,
-      image,
       ownerId,
       location,
       phoneNumber,
@@ -17,20 +26,44 @@ exports.createShop = async (req, res) => {
       daysOpen,
     } = req.body;
 
+    // Ensure image is properly received via multer
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Image is required" });
+    }
+
+    // Get image details from multer
+    const imageFile = req.file;
+
+    const params = {
+      Bucket: bucketname,
+      Key: imageFile.originalname, // Use original filename
+      Body: imageFile.buffer, // Use buffer data from multer
+      ContentType: imageFile.mimetype,
+    };
+    try {
+      const command = new PutObjectCommand(params);
+      await s3Client.send(command);
+    } catch (error) {
+      console.log(error);
+    }
+
+    // Create shop with image URL
+    const imageUrl = `https://${bucketname}.s3.${region}.amazonaws.com/${imageFile.originalname}`;
+
     const shop = await Shop.create({
       name,
       description,
-      image,
-      ownerId,
+      image: imageUrl, // Store image URL, not raw data
+      ownerId: req.user.id,
       location,
       phoneNumber,
-      ownerId: req.user.id,
       email,
       openingHours,
       closingHours,
       // daysOpen,
     });
-    console.log(shop);
 
     return res.status(201).json({
       success: true,
@@ -46,7 +79,7 @@ exports.createShop = async (req, res) => {
 exports.getAllShops = async (req, res) => {
   try {
     try {
-      const userId = req.user.id
+      const userId = req.user.id;
 
       const shops = await Shop.findAll({
         where: { ownerId: userId },

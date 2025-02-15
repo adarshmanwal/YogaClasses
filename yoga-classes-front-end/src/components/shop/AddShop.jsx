@@ -23,9 +23,26 @@ export default function AddShop({ isModalOpen, setIsModalOpen }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  }
+
   // Handle file input change
-  const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
+  const handleFileChange = async (e) => {
+    const image = e.target.files[0];
+    debugger;
+    // const base64Image = await convertToBase64(image);
+
+    setFormData((prev) => ({ ...prev, image: image }));
   };
 
   // Handle form submission
@@ -33,12 +50,19 @@ export default function AddShop({ isModalOpen, setIsModalOpen }) {
     e.preventDefault();
     const shopData = new FormData();
     Object.keys(formData).forEach((key) => {
-      shopData.append(key, formData[key]);
+      if (key === "image" && formData.image) {
+        shopData.append("image", formData.image);
+      } else {
+        shopData.append(key, formData[key]);
+      }
     });
 
-    try {
-      const response = await httpClient.post("/shops/create", shopData);
+    debugger;
 
+    try {
+      const response = await httpClient.post("/shops/create", shopData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       if (response.status === 201) {
         shopCtx.addShop(response.data.data);
       }
@@ -134,8 +158,8 @@ export default function AddShop({ isModalOpen, setIsModalOpen }) {
         <input
           type="file"
           name="image"
-          accept="image/*"
-          onChange={handleFileChange}
+          accept=".jpeg, .png, .jpg*"
+          onChange={(e) => handleFileChange(e)}
           className="border p-2 w-full mb-4"
         />
 
