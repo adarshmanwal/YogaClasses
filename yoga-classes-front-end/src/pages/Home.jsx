@@ -53,7 +53,7 @@ export default function Home() {
             <div className="relative mb-2">
               <img
                 className="w-full h-40 object-cover rounded-t-lg"
-                src={thumbnail}
+                src={shop.image || thumbnail}
                 alt={shop.name}
               />
             </div>

@@ -57,8 +57,6 @@ export default function AddShop({ isModalOpen, setIsModalOpen }) {
       }
     });
 
-    debugger;
-
     try {
       const response = await httpClient.post("/shops/create", shopData, {
         headers: { "Content-Type": "multipart/form-data" },

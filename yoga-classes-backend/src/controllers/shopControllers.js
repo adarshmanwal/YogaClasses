@@ -1,7 +1,13 @@
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { Shop, User } = require("../../models");
 const dotenv = require("dotenv");
 dotenv.config();
+
 const bucketname = process.env.BUCKET_NAME;
 const region = process.env.BUCKET_REGION;
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
@@ -78,25 +84,40 @@ exports.createShop = async (req, res) => {
 // Get all shops
 exports.getAllShops = async (req, res) => {
   try {
-    try {
-      const userId = req.user.id;
+    const userId = req.user.id;
 
-      const shops = await Shop.findAll({
-        where: { ownerId: userId },
-        include: [{ model: User, attributes: ["id", "email"] }],
-      });
+    const shops = await Shop.findAll({
+      where: { ownerId: userId },
+      include: [{ model: User, attributes: ["id", "email"] }],
+    });
 
-      return res.status(200).json({ success: true, data: shops });
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        return res.status(401).json({
-          success: false,
-          message: "Token expired. Please log in again.",
-        });
-      }
-      throw error;
-    }
+    const updatedShops = await Promise.all(
+      shops.map(async (shop) => {
+        if (shop.image) {
+          const getObjectParams = {
+            Bucket: bucketname,
+            Key: shop.image.split("/").pop(),
+          };
+
+          const command = new GetObjectCommand(getObjectParams);
+          const signedUrl = await getSignedUrl(s3Client, command, {
+            expiresIn: 3600,
+          });
+
+          return { ...shop.toJSON(), image: signedUrl };
+        }
+        return shop.toJSON();
+      })
+    );
+
+    return res.status(200).json({ success: true, data: updatedShops });
   } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        success: false,
+        message: "Token expired. Please log in again.",
+      });
+    }
     return res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -132,6 +153,26 @@ exports.updateShop = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Shop not found" });
+    }
+
+    if (req.file) {
+      const imageFile = req.file;
+
+      const params = {
+        Bucket: bucketname,
+        Key: imageFile.originalname, 
+        Body: imageFile.buffer, 
+        ContentType: imageFile.mimetype,
+      };
+      try {
+        const command = new PutObjectCommand(params);
+        await s3Client.send(command);
+      } catch (error) {
+        console.log(error);
+      }
+
+      const imageUrl = `https://${bucketname}.s3.${region}.amazonaws.com/${imageFile.originalname}`;
+      updatedData.image = imageUrl;
     }
 
     await shop.update(updatedData);

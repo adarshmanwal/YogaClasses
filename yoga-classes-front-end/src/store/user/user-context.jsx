@@ -7,6 +7,8 @@ export const UserContext = createContext({
   setUserData: () => {},
 });
 
+let globalSetUserData = () => {};
+
 export default function UserContextProvider({ children }) {
   const [user, setUser] = useState(initialUserData);
   useEffect(() => {
@@ -15,6 +17,8 @@ export default function UserContextProvider({ children }) {
       setUser(storedUser);
     }
   }, []);
+
+  globalSetUserData = setUserData;
 
   function setUserData(data) {
     setUser(data);
@@ -26,4 +30,8 @@ export default function UserContextProvider({ children }) {
       {children}
     </UserContext.Provider>
   );
+}
+
+export function updateUserDataOutsideReact(data) {
+  globalSetUserData(data);
 }

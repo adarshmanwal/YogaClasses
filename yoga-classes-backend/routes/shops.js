@@ -17,7 +17,7 @@ var router = express.Router();
 router.post("/create", authenticate,upload.single("image"), createShop);
 router.get("/all", authenticate, getAllShops);
 router.get("/:id", authenticate, getShopById);
-router.put("/update/:id", authenticate, updateShop);
+router.put("/update/:id", authenticate,upload.single("image"), updateShop);
 router.delete("/delete/:id", authenticate, deleteShop);
 
 module.exports = router;
