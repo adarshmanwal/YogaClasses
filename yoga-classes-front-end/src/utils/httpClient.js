@@ -7,11 +7,10 @@ const httpClient = axios.create({
   },
 });
 
-
 httpClient.interceptors.request.use(
   (config) => {
     console.log("Sending Request:", config);
-    
+
     // Attach Authorization Token (if available)
     const token = localStorage.getItem("token");
     if (token) {
@@ -35,8 +34,9 @@ httpClient.interceptors.response.use(
 
     // Handle 401 Unauthorized globally (redirect to login)
     if (error.response?.status === 401) {
-      localStorage.removeItem("token"); // Clear token
-      window.location.href = "/auth"; // Redirect to login
+      localStorage.removeItem("token");
+      localStorage.removeItem("userData");
+      window.location.href = "/auth";
     }
 
     return Promise.reject(error);
