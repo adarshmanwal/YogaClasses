@@ -1,0 +1,27 @@
+name: yoga-classes-backend
+
+on:
+  push:
+    branches: [ DockerImage ]
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Login to docker hub
+        run:  docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build docker image
+        run: docker build -t adarshmanwal9/yoga-backend .
+      - name: Publish image to docker hub
+        run: docker push adarshmanwal9/yoga-backend:latest
+  deploy:
+    needs: build
+    runs-on: [aws-ec2]
+    steps:
+      - name: Pull image from docker hub 
+        uses: docker pull adarshmanwal9/yoga-backend:latest
+      - name: Delete old container
+        run:  docker rm -f yoga-backend-container
+      - name: Run docker container
+        run: docker run -d -p 3000:3000 --name yoga-backend-container adarshmanwal9/yoga-backend:latest

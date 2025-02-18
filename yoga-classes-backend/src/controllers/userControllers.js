@@ -4,7 +4,6 @@ const { User } = require("../../models");
 
 exports.signUp = async (req, res) => {
   const { email, password } = req.body;
-  debugger
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       let user = await User.create({
@@ -23,7 +22,7 @@ exports.signUp = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-
+    
   console.log(email, password);
 };
 
