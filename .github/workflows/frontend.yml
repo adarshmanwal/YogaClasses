@@ -1,0 +1,33 @@
+name: Yoga Classes Frontend CI/CD
+
+on:
+  push:
+    branches: [ DockerImage ]
+    paths:
+      - 'yoga-classes-front-end/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Docker image
+        run: docker build -t adarshmanwal9/yoga-frontend ./yoga-classes-frontend
+      - name: Publish image to Docker Hub
+        run: docker push adarshmanwal9/yoga-frontend:latest
+
+  deploy:
+    needs: build
+    runs-on: aws-ec2
+    steps:
+      - name: Pull image from Docker Hub
+        run: docker pull adarshmanwal9/yoga-frontend:latest
+      
+      - name: Delete old container
+        run: docker rm -f yoga-frontend-container || true
+      
+      - name: Run Docker container
+        run: docker run -d -p 3001:80 --name yoga-frontend-container adarshmanwal9/yoga-frontend:latest
