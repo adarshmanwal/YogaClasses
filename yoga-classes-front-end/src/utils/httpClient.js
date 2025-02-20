@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const httpClient = axios.create({
-  baseURL: "http://localhost:3000", // API base URL
+  baseURL: "http://16.170.214.207:3000", // API base URL
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,7 +11,6 @@ httpClient.interceptors.request.use(
   (config) => {
     console.log("Sending Request:", config);
 
-    // Attach Authorization Token (if available)
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
