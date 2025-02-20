@@ -15,7 +15,7 @@ jobs:
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker image
-        run: docker build -t adarshmanwal9/yoga-frontend ./yoga-classes-frontend
+        run: docker build -t adarshmanwal9/yoga-frontend ./yoga-classes-front-end
       - name: Publish image to Docker Hub
         run: docker push adarshmanwal9/yoga-frontend:latest
 
