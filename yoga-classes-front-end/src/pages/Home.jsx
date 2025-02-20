@@ -28,7 +28,7 @@ export default function Home() {
             placeholder="Search Shop"
           />
           <button className="h-10 w-[66px] bg-gray-200 border border-gray-400 flex items-center justify-center ml-[-1px] mr-2 relative">
-            Search
+            Search button
           </button>
         </div>
         <div className="w-[180px] flex items-center justify-between shrink-0 mr-5">
