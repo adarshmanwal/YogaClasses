@@ -92,3 +92,23 @@ We welcome contributions to the Yoga Classes Front-End project! If you have any 
 
 
 ##Things to achive
+
+###EC2 instance
+Start the EC2 instance from AWS EC2 and make sure the port 22 is active with custom config
+then go to the action runner and run the following command 
+./run.sh
+
+OR to create the action instance follow the command provided in git hub action section 
+
+
+
+
+
+###OBSERVATIONS 
+
+ERROR : permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post "http://%2Fvar%2Frun%2Fdocker.sock/v1.45/images/create?fromImage=adarshmanwal9%2Fyoga-frontend&tag=latest": dial unix /var/run/docker.sock: connect: permission denied
+
+SOlution  : run the following command in EC2 instance to give the permession of docker 
+sudo chmod 666 /var/run/docker.sock
+
+
