@@ -6,10 +6,15 @@ import Authentication, { action as authAction } from "./pages/Authenticate";
 import Error from "./pages/Error";
 import { tokenLoader } from "./utils/auth";
 import { action as logoutAction } from "./pages/Logout";
+
+// loaders
 import { HomePageLoaders } from "./loaders/homePageLoader";
 import { UserContext } from "./store/user/user-context";
 import ShopDetails from "./pages/shop/ShopDetails";
 import { shopDetailsLoader } from "./loaders/shopLoader";
+import { loader as ProfileLoader } from "./loaders/user/profileLoader";
+
+import Profile from "./pages/user/Profile";
 
 function App() {
   const { setUserData } = useContext(UserContext);
@@ -23,8 +28,19 @@ function App() {
       id: "root",
       children: [
         { index: true, element: <Home />, loader: HomePageLoaders, id: "home" },
-        { path: "shops/:id", element: <ShopDetails />,loader: shopDetailsLoader,id: "shop-details" },
-        { 
+        {
+          path: "profile",
+          element: <Profile />,
+          loader: ProfileLoader,
+          id: "profile",
+        },
+        {
+          path: "shops/:id",
+          element: <ShopDetails />,
+          loader: shopDetailsLoader,
+          id: "shop-details",
+        },
+        {
           path: "auth",
           element: <Authentication />,
           action: (args) => authAction({ ...args, context: { setUserData } }),

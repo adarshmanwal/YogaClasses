@@ -47,16 +47,16 @@ exports.login = async (req, res) => {
     }
 };
 
-// exports.getProfile = async (req, res) => {
-//   try {
-//     const user = await User.findByPk(req.user.id, {
-//       attributes: ["id", "name", "email", "usertype"],
-//     });
-//     res.json(user);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id, {
+      attributes: ["id", "email"],
+    });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // exports.deleteProfile = async (req, res) => {
 //   try {
