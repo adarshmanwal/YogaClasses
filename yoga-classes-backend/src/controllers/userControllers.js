@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: ["id", "email"],
+      attributes: ["id", "email","userType"],
     });
     res.json(user);
   } catch (error) {
