@@ -12,6 +12,7 @@ export default function Profile() {
           <h2 className="text-2xl font-semibold text-gray-800">{data?.name || "adarsh manwal"}</h2>
           <p className="text-gray-600">{data?.email || "johndoe@example.com"}</p>
           <p className="text-gray-500">Joined on: {data?.joinedDate || "January 1, 2024"}</p>
+          <p className="text-gray-500">User Type: {data?.userType || "N/A"}</p>
         </div>
       </div>
       <div className="mt-6 border-t pt-4">

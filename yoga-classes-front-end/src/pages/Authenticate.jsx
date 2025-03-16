@@ -1,26 +1,32 @@
 import React from "react";
 import AuthForm from "../components/AuthForm";
-import { redirect } from "react-router-dom";
+import { Outlet, redirect } from "react-router-dom";
 import httpClient from "../utils/httpClient";
 import { updateUserDataOutsideReact } from "../store/user/user-context";
 
 export default function Authentication() {
-  return <AuthForm></AuthForm>;
+  // return <AuthForm></AuthForm>;
+  return (
+    <div>
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
 }
 
 export async function action({ request }) {
-  const searchParams = new URL(request.url).searchParams;
-  const mode = searchParams.get("mode") || "login";
+  debugger;
+  const url = new URL(request.url);
+  const pathSegments = url.pathname.split("/");
+  const lastValue = pathSegments.filter(Boolean).pop();
   const data = await request.formData();
   const authData = {
     email: data.get("email"),
     password: data.get("password"),
-  };  
-  if (mode !== "login" && mode !== "signup") {
-    throw new Response("Invalid mode", { status: 400 });
-  }
+  };
 
-  const response = await httpClient.post(`/users/${mode}`, authData);
+  const response = await httpClient.post(`/users/${lastValue}`, authData);
 
   if (response.status === 401 || response.status === 422) {
     return response;

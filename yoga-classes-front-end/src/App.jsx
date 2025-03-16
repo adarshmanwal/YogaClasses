@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { useContext } from "react";
 import Root from "./pages/Root";
 import Home from "./pages/Home";
@@ -15,6 +15,8 @@ import { shopDetailsLoader } from "./loaders/shopLoader";
 import { loader as ProfileLoader } from "./loaders/user/profileLoader";
 
 import Profile from "./pages/user/Profile";
+import Login from "./pages/user/auth/Login";
+import SignUp from "./pages/user/auth/SignUp";
 
 function App() {
   const { setUserData } = useContext(UserContext);
@@ -44,6 +46,21 @@ function App() {
           path: "auth",
           element: <Authentication />,
           action: (args) => authAction({ ...args, context: { setUserData } }),
+          children: [
+            { index: true, element: <Navigate to="login" replace /> },
+            {
+              path: "login",
+              element: <Login />,
+              action: (args) =>
+                authAction({ ...args, context: { setUserData } }),
+            },
+            {
+              path: "signup",
+              element: <SignUp />,
+              action: (args) =>
+                authAction({ ...args, context: { setUserData } }),
+            },
+          ],
         },
         {
           path: "/logout",
