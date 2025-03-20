@@ -24,6 +24,7 @@ export async function action({ request }) {
   const authData = {
     email: data.get("email"),
     password: data.get("password"),
+    userType: data.get("userType"),
   };
 
   const response = await httpClient.post(`/users/${lastValue}`, authData);
