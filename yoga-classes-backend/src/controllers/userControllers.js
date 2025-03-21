@@ -3,60 +3,66 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../../models");
 
 exports.signUp = async (req, res) => {
-  const { email, password } = req.body;
-    try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      let user = await User.create({
-        email,
-        password: hashedPassword,
-      });
-      user = await User.findOne({ where: { email } });
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).json({ error: "Invalid credentials" });
-      }
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
-      user.dataValues.token = token
-      res.status(201).json(user);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+  const { email, password, userType } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    let user = await User.create({
+      email,
+      password: hashedPassword,
+      userType,
+    });
+    user = await User.findOne({ where: { email } });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ error: "Invalid credentials" });
     }
-    
-  console.log(email, password);
+    const token = jwt.sign(
+      { id: user.id, userType: user.userType },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+    user.dataValues.token = token;
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
-    try {
-      const user = await User.findOne({ where: { email } });
-      if(!user){
-        return res.status(401).json({ error: "EMAIL_NOT_FOUND" });
-      }
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).json({ error: "Invalid credentials" });
-      }
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
-      user.dataValues.token = token
-      res.json(user);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ error: "EMAIL_NOT_FOUND" });
     }
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+    const token = jwt.sign(
+      { id: user.id, userType: user.userType },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+    user.dataValues.token = token;
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-// exports.getProfile = async (req, res) => {
-//   try {
-//     const user = await User.findByPk(req.user.id, {
-//       attributes: ["id", "name", "email", "usertype"],
-//     });
-//     res.json(user);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id, {
+      attributes: ["id", "email", "userType"],
+    });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // exports.deleteProfile = async (req, res) => {
 //   try {

@@ -5,9 +5,12 @@ import Header from "../components/Header";
 
 export default function Error() {
   const error = useRouteError();
-
   let title = "An error has occurred";
   let message = "Please try again later";
+  if(error.code === "ERR_NETWORK"){
+    title = "Network Error";
+    message = "Services are Down. Please try again later";
+  }
   if (error.status === 404) {
     title = "Page not found";
     message = "The page you are looking for does not exist";

@@ -1,7 +1,7 @@
 var express = require('express');
-const { signUp, login } = require('../src/controllers/userControllers');
+const { signUp, login,getProfile } = require('../src/controllers/userControllers');
 var router = express.Router();
-
+const authenticateToken = require('../src/middlewares/authMiddleware');
 // Register route
 router.post('/signup', signUp);
 
@@ -13,6 +13,6 @@ router.post('/login', login);
 // router.delete('/delete',authenticateToken, deleteProfile);
 
 // // Protected route example
-// router.get('/profile', authenticateToken, getProfile);
+router.get('/profile', authenticateToken, getProfile);
 
 module.exports = router;

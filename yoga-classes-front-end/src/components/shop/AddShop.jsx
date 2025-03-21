@@ -39,7 +39,6 @@ export default function AddShop({ isModalOpen, setIsModalOpen }) {
   // Handle file input change
   const handleFileChange = async (e) => {
     const image = e.target.files[0];
-    debugger;
     // const base64Image = await convertToBase64(image);
 
     setFormData((prev) => ({ ...prev, image: image }));

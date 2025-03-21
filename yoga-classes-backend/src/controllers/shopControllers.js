@@ -1,11 +1,11 @@
 const {
   S3Client,
   PutObjectCommand,
-  GetObjectCommand,
 } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { Shop, User } = require("../../models");
 const dotenv = require("dotenv");
+const { GetShopImages } = require("./Shops/GetShopImages");
 dotenv.config();
 
 const bucketname = process.env.BUCKET_NAME;
@@ -84,41 +84,27 @@ exports.createShop = async (req, res) => {
 // Get all shops
 exports.getAllShops = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const { id: userId, userType } = req.user;
+
+    let whereClause = {};
+    if (userType === "shop_admin") {
+      whereClause.ownerId = userId;
+    }
 
     const shops = await Shop.findAll({
-      where: { ownerId: userId },
-      include: [{ model: User, attributes: ["id", "email"] }],
+      where: whereClause,
+      include: userType === "shop_admin" ? [{ model: User, attributes: ["id", "email"] }] : [],
     });
 
-    const updatedShops = await Promise.all(
-      shops.map(async (shop) => {
-        if (shop.image) {
-          const getObjectParams = {
-            Bucket: bucketname,
-            Key: shop.image.split("/").pop(),
-          };
-
-          const command = new GetObjectCommand(getObjectParams);
-          const signedUrl = await getSignedUrl(s3Client, command, {
-            expiresIn: 3600,
-          });
-
-          return { ...shop.toJSON(), image: signedUrl };
-        }
-        return shop.toJSON();
-      })
-    );
-
+    const updatedShops = await GetShopImages(shops, s3Client);
     return res.status(200).json({ success: true, data: updatedShops });
   } catch (error) {
-    if (error.name === "TokenExpiredError") {
-      return res.status(401).json({
-        success: false,
-        message: "Token expired. Please log in again.",
-      });
-    }
-    return res.status(500).json({ success: false, message: error.message });
+    const statusCode = error.name === "TokenExpiredError" ? 401 : 500;
+    const message = error.name === "TokenExpiredError"
+      ? "Token expired. Please log in again."
+      : error.message;
+
+    return res.status(statusCode).json({ success: false, message });
   }
 };
 
@@ -160,8 +146,8 @@ exports.updateShop = async (req, res) => {
 
       const params = {
         Bucket: bucketname,
-        Key: imageFile.originalname, 
-        Body: imageFile.buffer, 
+        Key: imageFile.originalname,
+        Body: imageFile.buffer,
         ContentType: imageFile.mimetype,
       };
       try {

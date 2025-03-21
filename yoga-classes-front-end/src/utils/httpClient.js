@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const httpClient = axios.create({
-  baseURL: "http://51.20.189.2:3000", // API base URL
+  baseURL: "http://localhost:3000", // API base URL
   headers: {
     "Content-Type": "application/json",
   },
@@ -30,7 +30,10 @@ httpClient.interceptors.response.use(
   },
   (error) => {
     console.error("Error Response:", error);
-
+    if(error.code === "ERR_NETWORK" )
+    {
+      return Promise.reject(error);
+    }
     // Handle 401 Unauthorized globally (redirect to login)
     if (error.response?.status === 401) {
       localStorage.removeItem("token");

@@ -11,10 +11,26 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
+
   User.init(
     {
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: true,
+        },
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      userType: {
+        type: DataTypes.ENUM("shop_admin", "shop_worker", "customer"),
+        allowNull: false,
+        defaultValue: "customer",
+      },
     },
     {
       sequelize,
