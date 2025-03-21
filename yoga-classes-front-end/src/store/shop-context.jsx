@@ -19,7 +19,6 @@ export default function ShopContextProvider({ children }) {
   }
 
   function updateShop(shop) {
-    debugger
     setShops((prevShops) => {
       const shopIndex = prevShops.findIndex((s) => s.id === shop.id);
       prevShops[shopIndex] = shop;

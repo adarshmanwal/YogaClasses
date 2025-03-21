@@ -12,11 +12,13 @@ function AuthForm({ mode }) {
           {mode === "login" ? "Log in" : "Create a new account"}
         </h1>
 
-        {data?.errors && (
+        {data?.error && (
           <ul className="text-red-500 mb-4">
-            {Object.values(data.errors).map((err) => (
-              <li key={err}>{err}</li>
-            ))}
+            {Array.isArray(data.error) ? (
+              data.error.map((err, index) => <li key={index}>{err}</li>)
+            ) : (
+              <li>{data.error}</li>
+            )}
           </ul>
         )}
         {data?.message && <p className="text-red-500 mb-4">{data.message}</p>}
@@ -75,14 +77,20 @@ function AuthForm({ mode }) {
                 : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            {isSubmitting ? "Submitting..." : mode === "login" ? "Login" : "Sign Up"}
+            {isSubmitting
+              ? "Submitting..."
+              : mode === "login"
+              ? "Login"
+              : "Sign Up"}
           </button>
 
           <Link
             to={mode === "login" ? "/auth/signup" : "/auth/login"}
             className="text-blue-600 hover:underline"
           >
-            {mode === "login" ? "Don't have an account? Sign Up" : "Already have an account? Log in"}
+            {mode === "login"
+              ? "Don't have an account? Sign Up"
+              : "Already have an account? Log in"}
           </Link>
         </div>
       </Form>
