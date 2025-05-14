@@ -22,6 +22,11 @@ module.exports = (sequelize, DataTypes) => {
           isEmail: true,
         },
       },
+      status: {
+        type: DataTypes.ENUM("active", "inactive", "banned", "deleted", "pending","invited"),
+        allowNull: false,
+        defaultValue: "active"
+      },
       password: {
         type: DataTypes.STRING,
         allowNull: false,

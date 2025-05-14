@@ -3,11 +3,15 @@ import { useContext, useEffect, useState } from "react";
 import httpClient from "../../utils/httpClient";
 import Modal from "../../components/UI/Modal";
 import { ShopContext } from "../../store/shop-context";
+import EmployeesList from "../user/employees/EmployeesList";
+import Forms from "../../components/UI/Forms";
 
 export default function ShopDetails() {
   const navigate = useNavigate();
   const shopCtx = useContext(ShopContext);
   const [editShop, setEditShop] = useState(false);
+  const [addWorkerModel, setAddWorkerModel] = useState(false);
+  const [employeesData, setEmployeesData] = useState([]);
   const [shopData, setShopData] = useState(useLoaderData());
 
   useEffect(() => {
@@ -17,9 +21,9 @@ export default function ShopDetails() {
     }
   }, [shopCtx.shops, shopData.id]);
 
-  const handleChange = (e) => {
+  const handleChange = (stateFunction) => (e) => {
     const { name, value } = e.target;
-    setShopData((prev) => ({ ...prev, [name]: value }));
+    stateFunction((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
@@ -54,6 +58,31 @@ export default function ShopDetails() {
     }
   };
 
+  const handleAddWorker = async (e) => {
+    e.preventDefault();
+    try {
+      const workerForm = new FormData(e.target);
+      const worker = {
+        name: workerForm.get("employeeName"),
+        email: workerForm.get("employeeEmail"),
+      };
+  
+      const response = await httpClient.post(`/users/invite/${shopData.id}`, worker);
+      debugger
+      if (response.status === 200 || response.statusText === "OK") {
+        alert("Worker added successfully");
+        setEmployeesData((prev) => [...prev, worker]);
+        setAddWorkerModel(false);
+      }
+      debugger
+    } catch (error) {
+      debugger
+      console.error("Error adding worker:", error);
+      alert("Failed to add worker. Please try again.");
+    }
+  };
+  
+
   const handleDelete = async () => {
     try {
       const response = await httpClient.delete(`/shops/delete/${shopData.id}`);
@@ -68,20 +97,14 @@ export default function ShopDetails() {
 
   return (
     <>
+      {/* edit shop model */}
       {editShop && (
         <Modal open={editShop} onClose={() => setEditShop(false)}>
-          <form
-            onSubmit={handleSubmit}
-            className="p-4 bg-white rounded-md shadow-lg"
-          >
-            <h2 className="text-lg font-bold mb-4">Edit Shop</h2>
-            {[
+          <Forms
+            title="Edit Shop"
+            fields={[
               { name: "name", type: "text", placeholder: "Shop Name" },
-              {
-                name: "description",
-                type: "textarea",
-                placeholder: "Description",
-              },
+              { name: "description", type: "text", placeholder: "Description" },
               { name: "location", type: "text", placeholder: "Location" },
               {
                 name: "phoneNumber",
@@ -100,24 +123,18 @@ export default function ShopDetails() {
                 placeholder: "Closing Hours",
               },
               { name: "daysOpen", type: "text", placeholder: "Days Open" },
-            ].map(({ name, type, placeholder }) => (
-              <input
-                key={name}
-                type={type}
-                name={name}
-                placeholder={placeholder}
-                value={shopData[name] || ""}
-                onChange={handleChange}
-                className="border p-2 w-full mb-2"
-              />
-            ))}
+            ]}
+            initialValues={shopData}
+            onChange={handleChange(setShopData)}
+            onSubmit={handleSubmit}
+          >
             <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
               className="border p-2 w-full mb-4"
             />
-            <div className="flex justify-end gap-2">
+            {/* <div className="flex justify-end gap-2">
               <button
                 type="button"
                 className="bg-gray-200 px-4 py-2 rounded-md"
@@ -131,8 +148,31 @@ export default function ShopDetails() {
               >
                 Save Changes
               </button>
-            </div>
-          </form>
+            </div> */}
+          </Forms>
+        </Modal>
+      )}
+
+      {/* add Workers model */}
+      {addWorkerModel && (
+        <Modal open={addWorkerModel} onClose={() => setAddWorkerModel(false)}>
+          <Forms
+            onClose={() => setAddWorkerModel(false)}
+            title="Add Employee"
+            fields={[
+              {
+                name: "employeeName",
+                type: "text",
+                placeholder: "Employee Name",
+              },
+              {
+                name: "employeeEmail",
+                type: "email",
+                placeholder: "Employee Email",
+              },
+            ]}
+            onSubmit={handleAddWorker}
+          ></Forms>
         </Modal>
       )}
 
@@ -159,6 +199,12 @@ export default function ShopDetails() {
           >
             Delete
           </button>
+          <button
+            onClick={() => setAddWorkerModel(true)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            Add Workers
+          </button>
         </div>
         <div className="mt-4 border-t pt-4 text-gray-700">
           <p>
@@ -173,6 +219,10 @@ export default function ShopDetails() {
             {shopData.closingHours}
           </p>
         </div>
+      </div>
+
+      <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8">
+        <EmployeesList employeesData={employeesData}></EmployeesList>
       </div>
     </>
   );
