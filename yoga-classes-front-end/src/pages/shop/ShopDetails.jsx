@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from "react";
 import httpClient from "../../utils/httpClient";
 import Modal from "../../components/UI/Modal";
 import { ShopContext } from "../../store/shop-context";
-import { set } from "y";
 import EmployeesList from "../user/employees/EmployeesList";
 import Forms from "../../components/UI/Forms";
 
@@ -59,22 +58,30 @@ export default function ShopDetails() {
     }
   };
 
-  const handleAddWorker = (e) => {
+  const handleAddWorker = async (e) => {
     e.preventDefault();
-
-    const workerForm = new FormData(e.target);
-    const worker = {
-      name: workerForm.get("employeeName"),
-      email: workerForm.get("employeeEmail"),
-    };
-
-    console.log(worker);
-
-    setEmployeesData((prev) => [...prev, worker]);
-    setAddWorkerModel(false);
-
-    // set data to backend
+    try {
+      const workerForm = new FormData(e.target);
+      const worker = {
+        name: workerForm.get("employeeName"),
+        email: workerForm.get("employeeEmail"),
+      };
+  
+      const response = await httpClient.post(`/users/invite/${shopData.id}`, worker);
+      debugger
+      if (response.status === 200 || response.statusText === "OK") {
+        alert("Worker added successfully");
+        setEmployeesData((prev) => [...prev, worker]);
+        setAddWorkerModel(false);
+      }
+      debugger
+    } catch (error) {
+      debugger
+      console.error("Error adding worker:", error);
+      alert("Failed to add worker. Please try again.");
+    }
   };
+  
 
   const handleDelete = async () => {
     try {
@@ -93,70 +100,6 @@ export default function ShopDetails() {
       {/* edit shop model */}
       {editShop && (
         <Modal open={editShop} onClose={() => setEditShop(false)}>
-          {/* <form
-            onSubmit={handleSubmit}
-            className="p-4 bg-white rounded-md shadow-lg"
-          >
-            <h2 className="text-lg font-bold mb-4">Edit Shop</h2>
-            {[
-              { name: "name", type: "text", placeholder: "Shop Name" },
-              {
-                name: "description",
-                type: "textarea",
-                placeholder: "Description",
-              },
-              { name: "location", type: "text", placeholder: "Location" },
-              {
-                name: "phoneNumber",
-                type: "text",
-                placeholder: "Phone Number",
-              },
-              { name: "email", type: "email", placeholder: "Email" },
-              {
-                name: "openingHours",
-                type: "text",
-                placeholder: "Opening Hours",
-              },
-              {
-                name: "closingHours",
-                type: "text",
-                placeholder: "Closing Hours",
-              },
-              { name: "daysOpen", type: "text", placeholder: "Days Open" },
-            ].map(({ name, type, placeholder }) => (
-              <input
-                key={name}
-                type={type}
-                name={name}
-                placeholder={placeholder}
-                value={shopData[name] || ""}
-                onChange={handleChange(setEditShop)}
-                className="border p-2 w-full mb-2"
-              />
-            ))}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="border p-2 w-full mb-4"
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                type="button"
-                className="bg-gray-200 px-4 py-2 rounded-md"
-                onClick={() => setEditShop(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-              >
-                Save Changes
-              </button>
-            </div>
-          </form> */}
-
           <Forms
             title="Edit Shop"
             fields={[

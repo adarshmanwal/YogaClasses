@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const { Sequelize } = require("sequelize");
-const port = process.env.PORT || 3000; // Default to port 3000 if not specified
+const port = process.env.PORT || 3000;
 require("dotenv").config();
 const config = require("./config/config");
 const bodyParser = require("body-parser");
@@ -14,7 +14,7 @@ const corsOptions = {
   optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
-app.use("*", cors()); // Use CORS with the specified options
+app.use("*", cors());
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 

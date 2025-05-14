@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../../models");
+const { Op } = require("sequelize");
 
 exports.signUp = async (req, res) => {
   const { email, password, userType } = req.body;
@@ -32,7 +33,9 @@ exports.signUp = async (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email, status: { [Op.ne]: "invited" } },
+    });
     if (!user) {
       return res.status(401).json({ error: "EMAIL_NOT_FOUND" });
     }

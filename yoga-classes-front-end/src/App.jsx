@@ -17,6 +17,7 @@ import { loader as ProfileLoader } from "./loaders/user/profileLoader";
 import Profile from "./pages/user/Profile";
 import Login from "./pages/user/auth/Login";
 import SignUp from "./pages/user/auth/SignUp";
+import InviteSignup from "./pages/user/auth/InviteSignup";
 
 function App() {
   const { setUserData } = useContext(UserContext);
@@ -60,6 +61,10 @@ function App() {
               action: (args) =>
                 authAction({ ...args, context: { setUserData } }),
             },
+            {
+              path: "accept-invite",
+              element: <InviteSignup></InviteSignup>
+            }
           ],
         },
         {
