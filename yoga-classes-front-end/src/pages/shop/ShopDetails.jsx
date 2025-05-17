@@ -5,10 +5,13 @@ import Modal from "../../components/UI/Modal";
 import { ShopContext } from "../../store/shop-context";
 import EmployeesList from "../user/employees/EmployeesList";
 import Forms from "../../components/UI/Forms";
+import { UserContext } from "../../store/user/user-context";
+import {URL_PATH} from "../../utils/routesPath";
 
 export default function ShopDetails() {
   const navigate = useNavigate();
   const shopCtx = useContext(ShopContext);
+  const userCtx = useContext(UserContext);
   const [editShop, setEditShop] = useState(false);
   const [addWorkerModel, setAddWorkerModel] = useState(false);
   const [employeesData, setEmployeesData] = useState([]);
@@ -20,6 +23,21 @@ export default function ShopDetails() {
       setShopData(updatedShop);
     }
   }, [shopCtx.shops, shopData.id]);
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await httpClient.get(
+          `${URL_PATH.GET_EMPLOYEES}/${shopData.User.accountId}`
+        );
+        if (response.status === 200) {
+          setEmployeesData(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      }
+    };
+    fetchEmployees();
+  }, []);
 
   const handleChange = (stateFunction) => (e) => {
     const { name, value } = e.target;
@@ -65,23 +83,23 @@ export default function ShopDetails() {
       const worker = {
         name: workerForm.get("employeeName"),
         email: workerForm.get("employeeEmail"),
+        accountId: userCtx.user.accountId,
       };
-  
-      const response = await httpClient.post(`/users/invite/${shopData.id}`, worker);
-      debugger
+
+      const response = await httpClient.post(
+        `/users/invite/${shopData.id}`,
+        worker
+      );
       if (response.status === 200 || response.statusText === "OK") {
         alert("Worker added successfully");
         setEmployeesData((prev) => [...prev, worker]);
         setAddWorkerModel(false);
       }
-      debugger
     } catch (error) {
-      debugger
       console.error("Error adding worker:", error);
       alert("Failed to add worker. Please try again.");
     }
   };
-  
 
   const handleDelete = async () => {
     try {

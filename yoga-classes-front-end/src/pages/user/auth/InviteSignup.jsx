@@ -12,7 +12,6 @@ export default function InviteSignup() {
       navigate("/auth/login");
       return;
     }
-
     const acceptInvite = async () => {
       try {
         const response = await httpClient.post("/users/accept-invite", { token });
