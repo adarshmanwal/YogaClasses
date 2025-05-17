@@ -7,7 +7,7 @@ const { User, Shop } = require("../../../models");
 
 exports.inviteEmployee = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email,accountId } = req.body;
     const { shopId } = req.params;
     const adminId = req.user.id;
 
@@ -49,6 +49,7 @@ exports.inviteEmployee = async (req, res) => {
       password: hashedPassword,
       userType: "shop_worker",
       status: "invited",
+      accountId: accountId,
     });
 
     res
