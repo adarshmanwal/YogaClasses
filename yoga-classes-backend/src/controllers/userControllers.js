@@ -1,16 +1,21 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { User } = require("../../models");
+const { User,Account } = require("../../models");
 const { Op } = require("sequelize");
 
 exports.signUp = async (req, res) => {
-  const { email, password, userType } = req.body;
+  const { email, password, userType,accountId } = req.body;
   try {
+    let account = ''
     const hashedPassword = await bcrypt.hash(password, 10);
+    if(!accountId){ //new account if accountId is not provided
+      account = await Account.create()
+    }
     let user = await User.create({
       email,
       password: hashedPassword,
       userType,
+      accountId: accountId || account.id,
     });
     user = await User.findOne({ where: { email } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -66,6 +71,8 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
 
 // exports.deleteProfile = async (req, res) => {
 //   try {

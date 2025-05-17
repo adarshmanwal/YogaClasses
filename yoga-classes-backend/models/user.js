@@ -36,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "customer",
       },
+      accountId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
     },
     {
       sequelize,

@@ -93,7 +93,6 @@ exports.getAllShops = async (req, res) => {
 
     const shops = await Shop.findAll({
       where: whereClause,
-      include: userType === "shop_admin" ? [{ model: User, attributes: ["id", "email"] }] : [],
     });
 
     const updatedShops = await GetShopImages(shops, s3Client);
@@ -113,7 +112,7 @@ exports.getShopById = async (req, res) => {
   try {
     const { id } = req.params;
     const shop = await Shop.findByPk(id, {
-      include: [{ model: User, attributes: ["id", "email"] }],
+      include: [{ model: User, attributes: ["id", "email","accountId"] }],
     });
 
     if (!shop) {
