@@ -12,8 +12,9 @@ export const URL_PATH = {
 
 export const SHOP_PATH = {
     ROOT: "/shops",
-    ALL: "/shops/all",
+    ALL: "/shops/shopsList",
     ADD: "/shops/add",
     EDIT: "/shops/edit/:id",
     DETAILS: "/shops/:id",
+    ASSIGN_EMPLOYEE: "/shops/assignEmployee",
 }

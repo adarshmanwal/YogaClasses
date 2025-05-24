@@ -18,6 +18,7 @@ import Profile from "./pages/user/Profile";
 import Login from "./pages/user/auth/Login";
 import SignUp from "./pages/user/auth/SignUp";
 import InviteSignup from "./pages/user/auth/InviteSignup";
+import EmployeesList from "./pages/user/employees/EmployeesList";
 
 function App() {
   const { setUserData } = useContext(UserContext);
@@ -70,6 +71,18 @@ function App() {
         {
           path: "/logout",
           action: logoutAction,
+        },
+        {
+          path: "usersList",
+          element: <EmployeesList />,
+          // loader: shopDetailsLoader,
+          id: "user-list",
+        },
+        {
+          path: "users/:id",
+          // element: <ShopDetails />,
+          // loader: shopDetailsLoader,
+          // id: "shop-details",
         },
       ],
     },

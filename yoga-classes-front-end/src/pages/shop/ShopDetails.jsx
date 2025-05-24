@@ -7,6 +7,7 @@ import EmployeesList from "../user/employees/EmployeesList";
 import Forms from "../../components/UI/Forms";
 import { UserContext } from "../../store/user/user-context";
 import {URL_PATH} from "../../utils/routesPath";
+import { fetchEmployees } from "../../api/employeeService";
 
 export default function ShopDetails() {
   const navigate = useNavigate();
@@ -14,7 +15,6 @@ export default function ShopDetails() {
   const userCtx = useContext(UserContext);
   const [editShop, setEditShop] = useState(false);
   const [addWorkerModel, setAddWorkerModel] = useState(false);
-  const [employeesData, setEmployeesData] = useState([]);
   const [shopData, setShopData] = useState(useLoaderData());
 
   useEffect(() => {
@@ -23,21 +23,6 @@ export default function ShopDetails() {
       setShopData(updatedShop);
     }
   }, [shopCtx.shops, shopData.id]);
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const response = await httpClient.get(
-          `${URL_PATH.GET_EMPLOYEES}/${shopData.User.accountId}`
-        );
-        if (response.status === 200) {
-          setEmployeesData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-      }
-    };
-    fetchEmployees();
-  }, []);
 
   const handleChange = (stateFunction) => (e) => {
     const { name, value } = e.target;
@@ -240,7 +225,7 @@ export default function ShopDetails() {
       </div>
 
       <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8">
-        <EmployeesList employeesData={employeesData}></EmployeesList>
+        <EmployeesList ></EmployeesList>
       </div>
     </>
   );
