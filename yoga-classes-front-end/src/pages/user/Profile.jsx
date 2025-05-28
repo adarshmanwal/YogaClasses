@@ -6,7 +6,6 @@ import { fetchEmployees } from "../../api/employeeService";
 
 export default function Profile() {
   const data = useRouteLoaderData("profile");
-  console.log("data", data);
   useEffect(() => {
    const loadEmployees = async () => {
     try {

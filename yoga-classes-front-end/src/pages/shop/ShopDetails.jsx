@@ -6,8 +6,6 @@ import { ShopContext } from "../../store/shop-context";
 import EmployeesList from "../user/employees/EmployeesList";
 import Forms from "../../components/UI/Forms";
 import { UserContext } from "../../store/user/user-context";
-import {URL_PATH} from "../../utils/routesPath";
-import { fetchEmployees } from "../../api/employeeService";
 
 export default function ShopDetails() {
   const navigate = useNavigate();
@@ -18,11 +16,11 @@ export default function ShopDetails() {
   const [shopData, setShopData] = useState(useLoaderData());
 
   useEffect(() => {
-    const updatedShop = shopCtx.shops.find((s) => s.id === shopData.id);
+    const updatedShop = shopCtx.shops.find((s) => s.id === shopData.shop.id);
     if (updatedShop) {
       setShopData(updatedShop);
     }
-  }, [shopCtx.shops, shopData.id]);
+  }, [shopCtx.shops, shopData.shop]);
 
   const handleChange = (stateFunction) => (e) => {
     const { name, value } = e.target;
@@ -35,9 +33,9 @@ export default function ShopDetails() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const shop = new FormData();
-    Object.keys(shopData).forEach((key) => {
-      if (key === "image" && shopData.image) {
-        shop.append("image", shopData.image);
+    Object.keys(shopData.shop).forEach((key) => {
+      if (key === "image" && shopData.shop.image) {
+        shop.append("image", shopData.shop.image);
       } else {
         shop.append(key, shopData[key]);
       }
@@ -45,7 +43,7 @@ export default function ShopDetails() {
 
     try {
       const response = await httpClient.put(
-        `/shops/update/${shopData.id}`,
+        `/shops/update/${shopData.shop.id}`,
         shopData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -72,7 +70,7 @@ export default function ShopDetails() {
       };
 
       const response = await httpClient.post(
-        `/users/invite/${shopData.id}`,
+        `/users/invite/${shopData.shop.id}`,
         worker
       );
       if (response.status === 200 || response.statusText === "OK") {
@@ -88,9 +86,8 @@ export default function ShopDetails() {
 
   const handleDelete = async () => {
     try {
-      const response = await httpClient.delete(`/shops/delete/${shopData.id}`);
+      const response = await httpClient.delete(`/shops/delete/${shopData.shop.id}`);
       if (response.status === 200) {
-        console.log("Shop deleted successfully");
         navigate("/");
       }
     } catch (error) {
@@ -127,7 +124,7 @@ export default function ShopDetails() {
               },
               { name: "daysOpen", type: "text", placeholder: "Days Open" },
             ]}
-            initialValues={shopData}
+            initialValues={shopData.shop}
             onChange={handleChange(setShopData)}
             onSubmit={handleSubmit}
           >
@@ -181,13 +178,13 @@ export default function ShopDetails() {
 
       <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8">
         <img
-          src={shopData.image || "https://via.placeholder.com/600x300"}
-          alt={shopData.name}
+          src={shopData.shop.image || "https://via.placeholder.com/600x300"}
+          alt={shopData.shop.name}
           className="w-full h-64 object-cover rounded-lg"
         />
         <div className="mt-4">
-          <h1 className="text-2xl font-bold">{shopData.name}</h1>
-          <p className="text-gray-600">{shopData.description}</p>
+          <h1 className="text-2xl font-bold">{shopData.shop.name}</h1>
+          <p className="text-gray-600">{shopData.shop.description}</p>
         </div>
         <div className="mt-4 flex justify-end space-x-4">
           <button
@@ -211,21 +208,21 @@ export default function ShopDetails() {
         </div>
         <div className="mt-4 border-t pt-4 text-gray-700">
           <p>
-            <strong>📍 Location:</strong> {shopData.location}
+            <strong>📍 Location:</strong> {shopData.shop.location}
           </p>
           <p>
-            <strong>📞 Contact:</strong> {shopData.phoneNumber} |{" "}
-            {shopData.email}
+            <strong>📞 Contact:</strong> {shopData.shop.phoneNumber} |{" "}
+            {shopData.shop.email}
           </p>
           <p>
-            <strong>⏰ Open Hours:</strong> {shopData.openingHours} -{" "}
-            {shopData.closingHours}
+            <strong>⏰ Open Hours:</strong> {shopData.shop.openingHours} -{" "}
+            {shopData.shop.closingHours}
           </p>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8">
-        <EmployeesList ></EmployeesList>
+        <EmployeesList employeesListData={shopData.workers} ></EmployeesList>
       </div>
     </>
   );

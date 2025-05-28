@@ -1,16 +1,19 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchEmployees } from "../../../api/employeeService";
-import { URL_PATH,SHOP_PATH } from "../../../utils/routesPath";
+import { URL_PATH, SHOP_PATH } from "../../../utils/routesPath";
 import { UserContext } from "../../../store/user/user-context";
 import Modal from "../../../components/UI/Modal";
 import Forms from "../../../components/UI/Forms";
 import httpClient from "../../../utils/httpClient";
+import { useLocation } from "react-router-dom";
 
-export default function EmployeesList() {
+export default function EmployeesList({employeesListData = []}) {
   const [employeesData, setEmployeesData] = useState([]);
   const [shopsData, setShopsData] = useState([]);
   const userData = useContext(UserContext);
   const [assignedShop, setAssignedShop] = useState(false);
+  const location = useLocation();
+  const isFromUserList = location.pathname.includes("/usersList");
 
   useEffect(() => {
     const loadEmployees = async () => {
@@ -27,37 +30,37 @@ export default function EmployeesList() {
     };
     const loadShops = async () => {
       try {
-        const response = await fetchEmployees(
-          `${SHOP_PATH.ALL}`
-        );
+        const response = await fetchEmployees(`${SHOP_PATH.ALL}`);
         if (response) {
           setShopsData(response);
         }
       } catch (error) {
         console.error("Error fetching shops:", error);
       }
-    }
+    };
     loadShops();
-
-    loadEmployees();
+    if (employeesListData && employeesListData.length > 0) {
+      setEmployeesData(employeesListData);
+    } else {
+      loadEmployees();
+    }
   }, []);
 
   const handleAssignShop = async (e) => {
-   e.preventDefault();
+    e.preventDefault();
     try {
       const formdata = new FormData(e.target);
       const employeeId = formdata.get("employeeId");
       const shopId = formdata.get("shopId");
-      const response = await httpClient.put(
-        `${SHOP_PATH.ASSIGN_EMPLOYEE}`,
-        { employeeId,shopId }
-      );
+      const response = await httpClient.put(`${SHOP_PATH.ASSIGN_EMPLOYEE}`, {
+        employeeId,
+        shopId,
+      });
       if (response.status === 200) {
         alert("Employee assigned to shop successfully!");
         setAssignedShop(false);
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error assigning employee to shop:", error);
     }
   };
@@ -67,23 +70,23 @@ export default function EmployeesList() {
       value: employee.id,
       label: employee.email,
     }));
-  }
+  };
   const createShopOptions = (shops) => {
     return shops.map((shop) => ({
       value: shop.id,
       label: shop.name,
     }));
-  }
+  };
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-semibold text-gray-900 mb-6">Employees</h1>
-      <button
+      {isFromUserList && <button
         className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
         onClick={() => setAssignedShop(true)}
       >
         Assign Shop
-      </button>
+      </button>}
 
       {Array.isArray(employeesData) && employeesData.length > 0 ? (
         <ul role="list" className="divide-y divide-gray-100 space-y-4">
@@ -130,7 +133,7 @@ export default function EmployeesList() {
                 name: "employeeId",
                 type: "select",
                 placeholder: "Select Employee",
-                options:createEmployeeOptions(employeesData),
+                options: createEmployeeOptions(employeesData),
               },
               {
                 name: "shopId",

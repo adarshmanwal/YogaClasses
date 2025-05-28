@@ -9,7 +9,13 @@ export const URL_PATH = {
     USER_PROFILE: "/users/profile",
     GET_EMPLOYEES: "/users/getEmployees",
 }
-
+export const USER_PATH = {
+    ROOT: "/users",
+    PROFILE: "/users/profile",
+    EMPLOYEES: "/users/employees",
+    ADD_EMPLOYEE: "/users/addEmployee",
+    EDIT_EMPLOYEE: "/users/editEmployee/:id",
+}
 export const SHOP_PATH = {
     ROOT: "/shops",
     ALL: "/shops/shopsList",

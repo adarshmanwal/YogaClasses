@@ -128,7 +128,24 @@ exports.getShopById = async (req, res) => {
         .json({ success: false, message: "Shop not found" });
     }
 
-    return res.status(200).json({ success: true, data: shop });
+    let workers = [];
+    if (shop.hasAccess && shop.hasAccess.length > 0) {
+      workers = await User.findAll({
+        where: {
+          id: {
+            [Op.in]: shop.hasAccess,
+          },
+        },
+        attributes: ["id", "email", "accountId"],
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: {
+        shop: shop.toJSON(),
+        workers,
+      },
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
