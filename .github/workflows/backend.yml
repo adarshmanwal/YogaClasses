@@ -44,5 +44,5 @@ jobs:
       - name: Delete old container
         run: docker rm -f yoga-backend-container
       - name: Run docker container
-        run: docker run -d -p 3000:3000 --env-file ../.env --name yoga-backend-container adarshmanwal9/yoga-backend:latest
+        run: docker run -d -p 3000:3000 --env-file .env --name yoga-backend-container adarshmanwal9/yoga-backend:latest
 
