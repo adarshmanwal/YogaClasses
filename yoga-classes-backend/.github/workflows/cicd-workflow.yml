@@ -2,7 +2,7 @@ name: yoga-classes-backend
 
 on:
   push:
-    branches: [DockerImage]
+    branches: [main]
     paths:
       - "yoga-classes-backend/**"
 
