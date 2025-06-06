@@ -9,8 +9,6 @@ const httpClient = axios.create({
 
 httpClient.interceptors.request.use(
   (config) => {
-    console.log("Sending Request:", config);
-
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -25,7 +23,6 @@ httpClient.interceptors.request.use(
 
 httpClient.interceptors.response.use(
   (response) => {
-    console.log("Response Received:", response);
     return response;
   },
   (error) => {

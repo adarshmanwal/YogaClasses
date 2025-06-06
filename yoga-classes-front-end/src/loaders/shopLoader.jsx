@@ -11,9 +11,8 @@ export async function loader() {
 
 
 export async function shopDetailsLoader({request,params}){
-  console.log("request",request)
 
-  const response = await httpClient.get(`/shops/${params.id}`);
+  const response = await httpClient.get(`${SHOP_PATH.ROOT}/${params.id}`);
   if (response.status === 401 || response.status === 422) {
     return response;
   }

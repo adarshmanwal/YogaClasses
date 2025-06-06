@@ -7,6 +7,7 @@ const { Shop, User } = require("../../models");
 const dotenv = require("dotenv");
 const { GetShopImages } = require("./Shops/GetShopImages");
 dotenv.config();
+const { Op } = require('sequelize');
 
 const bucketname = process.env.BUCKET_NAME;
 const region = process.env.BUCKET_REGION;
@@ -84,17 +85,23 @@ exports.createShop = async (req, res) => {
 // Get all shops
 exports.getAllShops = async (req, res) => {
   try {
-    const { id: userId, userType } = req.user;
-
-    let whereClause = {};
-    if (userType === "shop_admin") {
-      whereClause.ownerId = userId;
+    const { id: userId } = req.user;
+    const user = await User.findByPk(userId);
+    let shops = [];
+    // Check if user is a shop admin
+    if (user.userType === "shop_admin") {
+      shops = await Shop.findAll({
+        where: { ownerId: userId },
+      });
+    } else if (user.userType === "shop_worker") { // Check if user is a shop worker
+      shops = await Shop.findAll({
+        where: {
+          hasAccess: {
+            [Op.contains]: [userId],
+          },
+        },
+      });
     }
-
-    const shops = await Shop.findAll({
-      where: whereClause,
-    });
-
     const updatedShops = await GetShopImages(shops, s3Client);
     return res.status(200).json({ success: true, data: updatedShops });
   } catch (error) {
@@ -112,7 +119,7 @@ exports.getShopById = async (req, res) => {
   try {
     const { id } = req.params;
     const shop = await Shop.findByPk(id, {
-      include: [{ model: User, attributes: ["id", "email","accountId"] }],
+      include: [{ model: User, attributes: ["id", "email", "accountId"] }],
     });
 
     if (!shop) {
@@ -121,7 +128,24 @@ exports.getShopById = async (req, res) => {
         .json({ success: false, message: "Shop not found" });
     }
 
-    return res.status(200).json({ success: true, data: shop });
+    let workers = [];
+    if (shop.hasAccess && shop.hasAccess.length > 0) {
+      workers = await User.findAll({
+        where: {
+          id: {
+            [Op.in]: shop.hasAccess,
+          },
+        },
+        attributes: ["id", "email", "accountId"],
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: {
+        shop: shop.toJSON(),
+        workers,
+      },
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
