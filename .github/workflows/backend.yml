@@ -32,19 +32,16 @@ jobs:
         run: docker build -t adarshmanwal9/yoga-backend ./yoga-classes-backend
       - name: Publish image to docker hub
         run: docker push adarshmanwal9/yoga-backend:latest
-      - name: Cleanup Docker images
-        run: docker system prune -a -f
 
-   deploy:
+  deploy:
     needs: build
     runs-on: [aws-ec2]
     steps:
-      - name: Pull image from Docker Hub
-        run: docker pull adarshmanwal9/yoga-backend:latest
-
+      - name: Pull image from docker hub
+        run: docker pull adarshmanwal9/yoga-backend
       - name: Delete old container
-        run: docker rm -f yoga-backend-container || true
-      - name: Run Docker container with env vars
+        run: docker rm -f yoga-backend-container
+      - name: Run docker container
         run: |
           docker run -d -p 3000:3000 \
             -e PORT=${{ secrets.PORT }} \
