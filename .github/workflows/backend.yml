@@ -1,4 +1,4 @@
-name: yoga-classes-backend-main
+name: Yoga Classes Backend CI/CD
 
 on:
   push:
