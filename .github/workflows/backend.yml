@@ -43,13 +43,7 @@ jobs:
         run: docker pull adarshmanwal9/yoga-backend:latest
 
       - name: Delete old container
-<<<<<<< Updated upstream
-        run: docker rm -f yoga-backend-container
-      - name: Run docker container
-        run: docker run -d -p 3000:3000 --env-file .env --name yoga-backend-container adarshmanwal9/yoga-backend:latest
-=======
         run: docker rm -f yoga-backend-container || true
-
       - name: Run Docker container with env vars
         run: |
           docker run -d -p 3000:3000 \
@@ -66,5 +60,4 @@ jobs:
             -e AWS_SECRET=${{ secrets.AWS_SECRET }} \
             --name yoga-backend-container \
             adarshmanwal9/yoga-backend:latest
->>>>>>> Stashed changes
 
