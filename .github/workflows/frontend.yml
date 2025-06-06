@@ -2,7 +2,7 @@ name: Yoga Classes Frontend CI/CD
 
 on:
   push:
-    branches: [ DockerImage ]
+    branches: [ main ]
     paths:
       - 'yoga-classes-front-end/**'
 
