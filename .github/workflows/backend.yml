@@ -32,6 +32,8 @@ jobs:
         run: docker build -t adarshmanwal9/yoga-backend ./yoga-classes-backend
       - name: Publish image to docker hub
         run: docker push adarshmanwal9/yoga-backend:latest
+      - name: Cleanup Docker images
+        run: docker system prune -a -f
 
   deploy:
     needs: build
@@ -42,5 +44,5 @@ jobs:
       - name: Delete old container
         run: docker rm -f yoga-backend-container
       - name: Run docker container
-        run: docker run -d -p 3000:3000 --env-file .env --name yoga-backend-container adarshmanwal9/yoga-backend:latest
+        run: docker run -d -p 3000:3000 --env-file ../.env --name yoga-backend-container adarshmanwal9/yoga-backend:latest
 
