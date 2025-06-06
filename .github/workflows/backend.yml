@@ -2,9 +2,10 @@ name: Yoga Classes Backend CI/CD
 
 on:
   push:
-    branches: [ DockerImage ]
+    branches: [ main ]
     paths:
       - 'yoga-classes-backend/**'
+  workflow_dispatch:
 
 jobs:
   build: 
