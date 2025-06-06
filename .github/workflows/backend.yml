@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "yoga-classes-backend/**"
-
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
