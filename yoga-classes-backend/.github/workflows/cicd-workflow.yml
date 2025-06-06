@@ -1,4 +1,4 @@
-name: yoga-classes-backend
+name: yoga-classes-backend-main
 
 on:
   push:
