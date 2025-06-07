@@ -42,19 +42,5 @@ jobs:
       - name: Delete old container
         run: docker rm -f yoga-backend-container
       - name: Run docker container
-        run: |
-          docker run -d -p 3000:3000 \
-            -e PORT=${{ secrets.PORT }} \
-            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e DB_NAME=${{ secrets.DB_NAME }} \
-            -e DB_HOST=${{ secrets.DB_HOST }} \
-            -e DB_PORT=${{ secrets.DB_PORT }} \
-            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-            -e BUCKET_NAME=${{ secrets.BUCKET_NAME }} \
-            -e BUCKET_REGION=${{ secrets.BUCKET_REGION }} \
-            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-            -e AWS_SECRET=${{ secrets.AWS_SECRET }} \
-            --name yoga-backend-container \
-            adarshmanwal9/yoga-backend:latest
+        run: docker run -d -p 3000:3000 --env-file .env --name yoga-backend-container adarshmanwal9/yoga-backend:latest
 
