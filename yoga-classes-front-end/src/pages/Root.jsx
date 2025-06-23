@@ -9,6 +9,7 @@ import Header from "../components/Header";
 import SideNav from "../components/SideNav";
 import ShopContextProvider from "../store/shop-context";
 import UserContextProvider from "../store/user/user-context";
+import GlobalContextProvider, { GlobalContext } from "../store/global-context";
 
 export default function Root() {
   const token = useRouteLoaderData("root");
@@ -25,22 +26,30 @@ export default function Root() {
   }, [token, submit]);
 
   return (
-    <UserContextProvider>
-      <ShopContextProvider>
-        <Header />
-        <div className="flex flex-col md:flex-row space-x-1">
-          {token && (
+    <GlobalContextProvider>
+      <UserContextProvider>
+        <ShopContextProvider>
+          <div className="flex">
             <div>
-              <SideNav />
+              {token && (
+                <div>
+                  <SideNav />
+                </div>
+              )}
             </div>
-          )}
-          <div className="flex-1">
-            <main>
-              <Outlet />
-            </main>
+            <div className="flex-1">
+              <div>
+                <Header />
+              </div>
+              <div>
+                <main>
+                  <Outlet />
+                </main>
+              </div>
+            </div>
           </div>
-        </div>
-      </ShopContextProvider>
-    </UserContextProvider>
+        </ShopContextProvider>
+      </UserContextProvider>
+    </GlobalContextProvider>
   );
 }

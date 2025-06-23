@@ -1,4 +1,8 @@
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import { useContext } from "react";
 import Root from "./pages/Root";
 import Home from "./pages/Home";
@@ -64,8 +68,8 @@ function App() {
             },
             {
               path: "accept-invite",
-              element: <InviteSignup></InviteSignup>
-            }
+              element: <InviteSignup></InviteSignup>,
+            },
           ],
         },
         {
@@ -88,7 +92,11 @@ function App() {
     },
   ]);
 
-  return <RouterProvider router={router}></RouterProvider>;
+  return (
+    <>
+      <RouterProvider router={router}></RouterProvider>
+    </>
+  );
 }
 
 export default App;
