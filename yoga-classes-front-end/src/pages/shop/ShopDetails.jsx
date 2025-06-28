@@ -14,13 +14,14 @@ export default function ShopDetails() {
   const [editShop, setEditShop] = useState(false);
   const [addWorkerModel, setAddWorkerModel] = useState(false);
   const [shopData, setShopData] = useState(useLoaderData());
+  // useEffect(() => {
+  //   const updatedShop = shopCtx.shops.find((s) => s.id === shopData.shop.id);
+  // console.log(updatedShop)
 
-  useEffect(() => {
-    const updatedShop = shopCtx.shops.find((s) => s.id === shopData.shop.id);
-    if (updatedShop) {
-      setShopData(updatedShop);
-    }
-  }, [shopCtx.shops, shopData.shop]);
+  //   if (updatedShop) {
+  //     setShopData(updatedShop);
+  //   }
+  // }, [shopCtx.shops, shopData.shop]);
 
   const handleChange = (stateFunction) => (e) => {
     const { name, value } = e.target;
