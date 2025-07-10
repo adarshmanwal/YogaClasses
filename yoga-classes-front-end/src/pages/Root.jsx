@@ -38,9 +38,7 @@ export default function Root() {
               )}
             </div>
             <div className="flex-1">
-              <div>
-                <Header />
-              </div>
+              <div>{token && <Header />}</div>
               <div>
                 <main>
                   <Outlet />

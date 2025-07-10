@@ -16,5 +16,6 @@ export async function shopDetailsLoader({request,params}){
   if (response.status === 401 || response.status === 422) {
     return response;
   }
+  console.log(response)
   return response.data.data;
 }

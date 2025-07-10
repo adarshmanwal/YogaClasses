@@ -35,18 +35,22 @@ function App() {
       loader: tokenLoader,
       id: "root",
       children: [
-        { index: true, element: <Home />, loader: HomePageLoaders, id: "home" },
+        { path: "shop", element: <Home />, loader: HomePageLoaders, id: "home" },
         {
-          path: "profile",
-          element: <Profile />,
-          loader: ProfileLoader,
-          id: "profile",
+          path: "/",
+          element: <Navigate to="/shop" replace />,
         },
         {
           path: "shops/:id",
           element: <ShopDetails />,
           loader: shopDetailsLoader,
           id: "shop-details",
+        },
+        {
+          path: "profile",
+          element: <Profile />,
+          loader: ProfileLoader,
+          id: "profile",
         },
         {
           path: "auth",

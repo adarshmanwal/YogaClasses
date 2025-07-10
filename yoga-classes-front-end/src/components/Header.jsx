@@ -21,7 +21,7 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 function Header() {
   const token = useRouteLoaderData("root");
   const userData = useContext(UserContext);
-  const {activeMenue, setActiveMenu} = useContext(GlobalContext);
+  const {setActiveMenu} = useContext(GlobalContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
