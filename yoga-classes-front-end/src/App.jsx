@@ -17,12 +17,15 @@ import { UserContext } from "./store/user/user-context";
 import ShopDetails from "./pages/shop/ShopDetails";
 import { shopDetailsLoader } from "./loaders/shopLoader";
 import { loader as ProfileLoader } from "./loaders/user/profileLoader";
+import { loader as userLoader } from "./loaders/user/UserLoader";
 
+// pages
 import Profile from "./pages/user/Profile";
 import Login from "./pages/user/auth/Login";
 import SignUp from "./pages/user/auth/SignUp";
 import InviteSignup from "./pages/user/auth/InviteSignup";
 import EmployeesList from "./pages/user/employees/EmployeesList";
+import User from "./pages/user/employees/User";
 
 function App() {
   const { setUserData } = useContext(UserContext);
@@ -87,10 +90,10 @@ function App() {
           id: "user-list",
         },
         {
-          path: "users/:id",
-          // element: <ShopDetails />,
-          // loader: shopDetailsLoader,
-          // id: "shop-details",
+          path: "user/:id",
+          element: <User />,
+          loader: userLoader,
+          id: "userDetails",
         },
       ],
     },

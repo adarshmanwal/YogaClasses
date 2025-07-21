@@ -136,7 +136,7 @@ exports.getShopById = async (req, res) => {
             [Op.in]: shop.hasAccess,
           },
         },
-        attributes: ["id", "email", "accountId"],
+        attributes: ["id", "email", "accountId","status"],
       });
     }
     return res.status(200).json({

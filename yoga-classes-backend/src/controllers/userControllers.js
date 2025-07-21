@@ -1,14 +1,15 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { User,Account } = require("../../models");
+const { User, Account, Shop } = require("../../models");
 const { Op } = require("sequelize");
-
+const shop = require("../../models/shop");
+const { Sequelize } = require("sequelize"); 
 exports.signUp = async (req, res) => {
-  const { email, password, userType,accountId } = req.body;
+  const { email, password, userType, accountId } = req.body;
   try {
     let account = ''
     const hashedPassword = await bcrypt.hash(password, 10);
-    if(!accountId){ //new account if accountId is not provided
+    if (!accountId) { //new account if accountId is not provided
       account = await Account.create()
     }
     let user = await User.create({
@@ -64,7 +65,7 @@ exports.login = async (req, res) => {
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: ["id", "email", "userType","accountId"],
+      attributes: ["id", "email", "userType", "accountId"],
     });
     res.json(user);
   } catch (error) {
@@ -89,3 +90,29 @@ exports.getProfile = async (req, res) => {
 //     res.status(500).json({ error: error.message });
 //   }
 // };
+
+
+exports.getUserWithShopAccess = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id, 10);
+
+    const user = await User.findByPk(userId, {
+      attributes: ["id", "email", "status", "userType", "accountId"],
+    });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const shopsWithAccess = await Shop.findAll({
+      where: Sequelize.literal(`${userId} = ANY("hasAccess")`),
+      attributes: ["id", "name", "location", "email"],
+    });
+
+    res.json({
+      ...user.toJSON(),
+      shopsWithAccess,
+    });
+  } catch (err) {
+    console.error("Error fetching user and shop access:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
