@@ -101,6 +101,8 @@ exports.getAllShops = async (req, res) => {
           },
         },
       });
+    } else if (user.userType === "customer") { // Check if user is a customer
+      shops = await Shop.findAll();
     }
     const updatedShops = await GetShopImages(shops, s3Client);
     return res.status(200).json({ success: true, data: updatedShops });
@@ -136,7 +138,7 @@ exports.getShopById = async (req, res) => {
             [Op.in]: shop.hasAccess,
           },
         },
-        attributes: ["id", "email", "accountId","status"],
+        attributes: ["id", "email", "accountId", "status"],
       });
     }
     return res.status(200).json({

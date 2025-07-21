@@ -87,7 +87,9 @@ export default function ShopDetails() {
 
   const handleDelete = async () => {
     try {
-      const response = await httpClient.delete(`/shops/delete/${shopData.shop.id}`);
+      const response = await httpClient.delete(
+        `/shops/delete/${shopData.shop.id}`
+      );
       if (response.status === 200) {
         navigate("/");
       }
@@ -187,26 +189,28 @@ export default function ShopDetails() {
           <h1 className="text-2xl font-bold">{shopData.shop.name}</h1>
           <p className="text-gray-600">{shopData.shop.description}</p>
         </div>
-        <div className="mt-4 flex justify-end space-x-4">
-          <button
-            onClick={() => setEditShop(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-          >
-            Edit
-          </button>
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-          >
-            Delete
-          </button>
-          <button
-            onClick={() => setAddWorkerModel(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-          >
-            Add Workers
-          </button>
-        </div>
+        {userCtx.user.userType != UserRole.CUSTOMER && (
+          <div className="mt-4 flex justify-end space-x-4">
+            <button
+              onClick={() => setEditShop(true)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => setAddWorkerModel(true)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Add Workers
+            </button>
+          </div>
+        )}
         <div className="mt-4 border-t pt-4 text-gray-700">
           <p>
             <strong>📍 Location:</strong> {shopData.shop.location}
@@ -222,9 +226,11 @@ export default function ShopDetails() {
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8">
-        <EmployeesList employeesListData={shopData.workers} ></EmployeesList>
-      </div>
+      {userCtx.user.userType != UserRole.CUSTOMER && (
+        <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8">
+          <EmployeesList employeesListData={shopData.workers}></EmployeesList>
+        </div>
+      )}
     </>
   );
 }
