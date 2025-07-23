@@ -1,7 +1,18 @@
 import React from "react";
 import logoimge from "../../assets/channel-2.jpg"; // Assuming this is the correct path for the logo image
 import { UserRole } from "../../constants/roles";
+import { socket } from "../../socket";
 const ShopList = ({ shops, user }) => {
+  const handleJoinShop = (e, shopId) => {
+    try {
+      e.stopPropagation();
+      console.log("Joining shop with ID:", shopId);
+      // Emit a socket event to join the shop
+      socket.emit("joinShop", 'hello');
+    } catch (error) {
+      console.error("Error joining shop:", error);
+    }
+  };
   return (
     <div className="flex flex-wrap gap-4 p-4">
       {shops.length > 0 ? (
@@ -42,10 +53,7 @@ const ShopList = ({ shops, user }) => {
                 {user.userType === UserRole.CUSTOMER && (
                   <button
                     className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all duration-200"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log(`Joining shop ${shop.id}`);
-                    }}
+                    onClick={(e) => handleJoinShop(e, shop.id)}
                   >
                     Join Shop
                   </button>
