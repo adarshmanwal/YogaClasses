@@ -3,16 +3,24 @@ const app = express();
 const { Sequelize } = require("sequelize");
 const port = process.env.PORT || 3000;
 require("dotenv").config();
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+
+// socket setup
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+const setUpSocket = require("./src/socket/socket");
+setUpSocket(io);
+
 const config = require("./config/config");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
-
-// CORS configuration
-const corsOptions = {
-  origin: "http://localhost:5173", // Replace with your frontend's URL
-  optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
-};
 
 app.use("*", cors());
 app.use(bodyParser.json({ limit: "50mb" }));
@@ -32,6 +40,6 @@ app.use("/users", userRoutes);
 const shopRoute = require("./routes/shops");
 app.use("/shops", shopRoute);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
